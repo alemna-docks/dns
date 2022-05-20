@@ -1,0 +1,26 @@
+FROM debian:bullseye-slim
+
+EXPOSE 53/udp 53/tcp
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# We install apt-utils first, otherwise we get errors like
+#   "debconf: delaying package configuration, since apt-utils is not installed"
+#
+RUN apt-get --assume-yes update && \
+    apt-get --assume-yes install --no-install-recommends \
+        apt-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Then, update and install everything else.
+RUN set -ex && \
+    apt-get --assume-yes update && \
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install --no-install-recommends \
+      dnsutils \
+      nano \
+      unbound && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+CMD [ "/usr/sbin/unbound", "-d" ]

@@ -1,0 +1,40 @@
+FROM debian:bullseye-slim
+
+EXPOSE 53/udp 53/tcp
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# We install apt-utils first, otherwise we get errors like
+#   "debconf: delaying package configuration, since apt-utils is not installed"
+#
+RUN apt-get --assume-yes update && \
+    apt-get --assume-yes install --no-install-recommends \
+        apt-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN useradd --system nsd
+    # ^^ TODO: Do we need to do this?
+
+# Then, update and install everything else.
+RUN set -ex && \
+    apt-get --assume-yes update && \
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install --no-install-recommends \
+      dnsutils \
+      nano \
+      nsd && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN mkdir /run/nsd && \
+    mkdir /run/nsd/zones && \
+    chown --recursive nsd:nsd /run/nsd
+
+WORKDIR /etc/nsd
+COPY --chown=nsd:nsd zones/ zones/
+RUN nsd-control-setup 
+# ^^ sets up keys for remote control
+
+CMD [ "/usr/sbin/nsd", "-d" ]
+
