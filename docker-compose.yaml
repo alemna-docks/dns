@@ -1,0 +1,69 @@
+version: "3.9"
+
+networks:
+  lan:
+    name: dns_lan
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ${bridge_name}
+    ipam:
+      config: 
+        - subnet: "${ipv4_subnet}"
+          gateway: "${ipv4_gateway}"
+
+# Unbound can be both a recursive DNS server and an authoritative DNS
+# server simultaneously, but in this scenario we're only going to be 
+# using it as a recursive DNS server while we leave the authoritative
+# role to NSD. 
+
+# This lets us keep a nice separation of duties. Unbound will be the 
+# "frontend" DNS server that all our devices send requests to, while 
+# NSD will be the "backend" DNS server that holds all our internal DNS
+# records. When Unbound recieves requests for internal IP addresses or 
+# DNS records it will start recursively resolving the request by turning 
+# to NSD, and when it recieves requests for external IP addresses or DNS
+# records it will start recursively resolving the request by turning to
+# the internet's DNS root servers. 
+#
+# See also:
+#	https://dnswatch.com/dns-docs/UNBOUND/
+
+services:
+  # Authoritative DNS server
+  dns_backend:
+    build:
+      context: nsd
+      dockerfile: DOCKERFILE
+    image: alemna/nsd
+    container_name: nsd
+    restart: on-failure
+    hostname: nsd
+    ports:
+      - "53"
+    networks:
+      lan:
+        ipv4_address: "${nsd_ipv4_address}"
+    volumes:
+      - ./nsd/nsd.conf:/etc/nsd/nsd.conf:rw
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  # Resolving (and caching, and validating) DNS server
+  dns_frontend:
+    build:
+      context: unbound
+      dockerfile: DOCKERFILE
+    image: alemna/unbound
+    container_name: unbound
+    restart: on-failure
+    hostname: unbound
+    ports:
+      - "53"
+    networks:
+      lan:
+        ipv4_address: "${unbound_ipv4_address}"
+    volumes:
+      - ./unbound/unbound.conf:/etc/unbound/unbound.conf:rw
+      - ./unbound/root.hints:/etc/unbound/root.hints:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
