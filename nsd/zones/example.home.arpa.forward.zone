@@ -1,0 +1,20 @@
+$ORIGIN home.arpa.
+$TTL 60
+
+example     IN SOA  a.ns.example.home.arpa. (
+                    admin.example.home.arpa.
+                    0123456789
+                    15M
+                    5M
+                    14D
+                    45M 
+                    )
+
+            IN NS   a.ns.example
+            IN NS   b.ns.example
+
+a.ns.example IN A       192.0.2.1
+             IN AAAA    2001:0DB8::53:1
+b.ns.example IN A       192.0.2.2
+             IN AAAA    2001:0DB8::53:2
+

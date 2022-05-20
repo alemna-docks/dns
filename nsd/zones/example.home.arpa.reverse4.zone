@@ -1,0 +1,14 @@
+$ORIGIN home.arpa.
+$TTL 60
+
+2.0.192.in-addr.arpa. IN SOA  a.ns.example.home.arpa. (
+                      admin.example.home.arpa.
+                      0123456789
+                      15M
+                       5M
+                      14D
+                      45M 
+                      )
+
+1.2.0.192.in-addr.arpa. IN PTR a.ns.example
+2.2.0.192.in-addr.arpa. IN PTR b.ns.example
