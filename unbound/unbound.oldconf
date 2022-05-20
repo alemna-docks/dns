@@ -1,0 +1,94 @@
+server:
+        verbosity: 5
+        logfile: "/var/log/unbound.log"
+
+        interface: 0.0.0.0
+        #interface: ::
+        do-ip4: yes
+        do-ip6: no
+
+        access-control: 0.0.0.0/0 refuse
+        access-control: 10.0.0.0/8 allow
+        access-control: 100.64.0.0/10 allow
+        access-control: 127.0.0.0/8 allow
+        access-control: 172.16.0.0/12 allow
+        access-control: 192.168.0.0/16 allow
+        #access-control: ::0/0 refuse
+        #access-control: ::1 allow
+        #access-control: fe80::/10 allow
+
+        hide-identity: yes
+        hide-version: yes
+
+        # Get root hints from this file. The file must be formatted like a zone file,
+        # but with root nameserver names and addresses only. Unbound has defaults for
+        # root-hints, but servers can change occasionally so we instead provide this
+        # file which we can update ourselves with:
+        # 'curl ftp://FTP.INTERNIC.NET/domain/named.cache'
+        root-hints: "/etc/unbound/root.hints"
+
+        # Synthesize NXDOMAINs from DNSSEC NSEC chains.
+        # https://tools.ietf.org/html/rfc8198
+        #
+        aggressive-nsec: yes
+
+        unblock-lan-zones: yes
+        insecure-lan-zones: yes
+
+        private-address: 10.0.0.0/8
+        private-address: 100.64.0.0/10
+        private-address: 169.254.0.0/16
+        private-address: 172.16.0.0/12
+        private-address: 192.168.0.0/16
+        #private-address: fd00::/8
+        #private-address: fe80::/10
+
+        domain-insecure: 10.in-addr.arpa.
+        domain-insecure: 16.172.in-addr.arpa.
+        domain-insecure: 17.172.in-addr.arpa.
+        domain-insecure: 18.172.in-addr.arpa.
+        domain-insecure: 19.172.in-addr.arpa.
+        domain-insecure: 20.172.in-addr.arpa.
+        domain-insecure: 21.172.in-addr.arpa.
+        domain-insecure: 22.172.in-addr.arpa.
+        domain-insecure: 23.172.in-addr.arpa.
+        domain-insecure: 24.172.in-addr.arpa.
+        domain-insecure: 25.172.in-addr.arpa.
+        domain-insecure: 26.172.in-addr.arpa.
+        domain-insecure: 27.172.in-addr.arpa.
+        domain-insecure: 28.172.in-addr.arpa.
+        domain-insecure: 29.172.in-addr.arpa.
+        domain-insecure: 30.172.in-addr.arpa.
+        domain-insecure: 31.172.in-addr.arpa.
+        domain-insecure: 168.192.in-addr.arpa.
+
+        local-zone: 10.in-addr.arpa. nodefault
+        local-zone: 16.172.in-addr.arpa. nodefault
+        local-zone: 17.172.in-addr.arpa. nodefault
+        local-zone: 18.172.in-addr.arpa. nodefault
+        local-zone: 19.172.in-addr.arpa. nodefault
+        local-zone: 20.172.in-addr.arpa. nodefault
+        local-zone: 21.172.in-addr.arpa. nodefault
+        local-zone: 22.172.in-addr.arpa. nodefault
+        local-zone: 23.172.in-addr.arpa. nodefault
+        local-zone: 24.172.in-addr.arpa. nodefault
+        local-zone: 25.172.in-addr.arpa. nodefault
+        local-zone: 26.172.in-addr.arpa. nodefault
+        local-zone: 27.172.in-addr.arpa. nodefault
+        local-zone: 28.172.in-addr.arpa. nodefault
+        local-zone: 29.172.in-addr.arpa. nodefault
+        local-zone: 30.172.in-addr.arpa. nodefault
+        local-zone: 31.172.in-addr.arpa. nodefault
+        local-zone: 168.192.in-addr.arpa. nodefault
+
+
+        private-domain: home.arpa.
+        domain-insecure: home.arpa.
+        local-zone: home.arpa. nodefault
+
+
+remote-control:
+        control-enable: yes
+        control-interface: /var/run/unbound.sock
+
+include: /etc/unbound/unbound.conf.d/*.conf

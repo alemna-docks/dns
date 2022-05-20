@@ -18,9 +18,16 @@ RUN set -ex && \
     apt-get --assume-yes upgrade && \
     apt-get --assume-yes install --no-install-recommends \
       dnsutils \
+      iputils-ping \
       nano \
       unbound && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD [ "/usr/sbin/unbound", "-d" ]
+RUN mkdir /var/log/unbound
+
+COPY start-unbound.sh /etc/unbound/start-unbound.sh
+RUN chmod +x /etc/unbound/start-unbound.sh
+
+CMD [ "/etc/unbound/start-unbound.sh" ]
+#CMD [ "/usr/sbin/unbound", "-d" ]

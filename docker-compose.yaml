@@ -38,8 +38,8 @@ services:
     container_name: nsd
     restart: on-failure
     hostname: nsd
-    ports:
-      - "53"
+#    ports:
+#      - "53"
     networks:
       lan:
         ipv4_address: "${nsd_ipv4_address}"
@@ -58,8 +58,13 @@ services:
     container_name: unbound
     restart: on-failure
     hostname: unbound
+    environment:
+      NSD_IP: "${nsd_ipv4_address}"
     ports:
+      # You have to specify when you also want to permit UDP
       - "53"
+      - "53/udp"
+      #- "${dns_address_for_clients}:53:53"
     networks:
       lan:
         ipv4_address: "${unbound_ipv4_address}"
@@ -69,3 +74,17 @@ services:
       - ./unbound/root.hints:/etc/unbound/root.hints:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+
+#  dns_front2:
+#    image: mvance/unbound
+#    container_name: proper_unbound
+#    hostname: unbound2
+#    ports:
+#      - "53"
+#    networks:
+#      lan:
+#        ipv4_address: "10.65.196.35"
+#    volumes:
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+

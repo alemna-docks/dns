@@ -90,3 +90,7 @@ L.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:9f::42
 M.ROOT-SERVERS.NET.      3600000      A     202.12.27.33
 M.ROOT-SERVERS.NET.      3600000      AAAA  2001:dc3::35
 ; End of file
+;
+;
+HOME.ARPA.               3600000      NS    A.NS.HOME.ARPA
+A.NS.HOME.ARPA.          3600000      A     10.65.196.36

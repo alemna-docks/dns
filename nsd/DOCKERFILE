@@ -22,6 +22,7 @@ RUN set -ex && \
     apt-get --assume-yes upgrade && \
     apt-get --assume-yes install --no-install-recommends \
       dnsutils \
+      iputils-ping \
       nano \
       nsd && \
     apt-get clean && \
