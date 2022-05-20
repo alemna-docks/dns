@@ -64,6 +64,7 @@ services:
         ipv4_address: "${unbound_ipv4_address}"
     volumes:
       - ./unbound/unbound.conf:/etc/unbound/unbound.conf:rw
+      - ./unbound/unbound.conf.d:/etc/unbound/unbound.conf.d:rw
       - ./unbound/root.hints:/etc/unbound/root.hints:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
