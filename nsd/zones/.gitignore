@@ -1,0 +1,5 @@
+*
+!.gitignore
+!example.home.arpa.forward.zone
+!example.home.arpa.reverse4.zone
+!example.home.arpa.reverse6.zone
